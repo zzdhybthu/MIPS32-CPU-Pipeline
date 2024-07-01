@@ -1,0 +1,6 @@
+[submodule "MIPS32_pipeline"]
+	path = reference/MIPS32_pipeline
+	url = git@github.com:duskmoon314/MIPS32_pipeline.git
+[submodule "Pipeline-CPU"]
+	path = reference/PipelineCPU
+	url = git@github.com:Timothy-Liuxf/PipelineCPU.git
