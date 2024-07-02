@@ -9,7 +9,7 @@
 // Module Name: ID_EX
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: ID/EX Register
 // 
 // Dependencies: None
@@ -32,16 +32,19 @@ module ID_EX (
     input [4:0] IF_ID_RsAddr,
     input [4:0] IF_ID_RtAddr,
     input [4:0] IF_ID_RdAddr,
-    input [3:0] IF_ID_ALUOp,
-    input IF_ID_ALUSrc1,
-    input IF_ID_ALUSrc2,
-    input [1:0] IF_ID_RegDst,
-    input IF_ID_MemRd,
-    input IF_ID_MemWr,
-    input [1:0] IF_ID_MemtoReg,
-    input IF_ID_RegWr,
+    input [3:0] ALUOp,
+    input ALUSrc1,
+    input ALUSrc2,
+    input Sign,
+    input LuOp,
+    input [1:0] RegDst,
+    input MemRd,
+    input MemWr,
+    input [1:0] MemtoReg,
+    input RegWr,
     input [31:0] IF_ID_PC4,
     input [5:0] IF_ID_OpCode,
+    input [4:0] ALUCtrl,
     output reg [1:0] ID_EX_PCSrc,
     output reg [31:0] ID_EX_Rs,
     output reg [31:0] ID_EX_Rt,
@@ -52,6 +55,8 @@ module ID_EX (
     output reg [3:0] ID_EX_ALUOp,
     output reg ID_EX_ALUSrc1,
     output reg ID_EX_ALUSrc2,
+    output reg ID_EX_Sign,
+    output reg ID_EX_LuOp,
     output reg [1:0] ID_EX_RegDst,
     output reg ID_EX_MemRd,
     output reg ID_EX_MemWr,
@@ -59,6 +64,7 @@ module ID_EX (
     output reg ID_EX_RegWr,
     output reg [31:0] ID_EX_PC4,
     output reg [5:0] ID_EX_OpCode,
+    output reg [4:0] ID_EX_ALUCtrl
 );
 
 always @(posedge clk or posedge rst) begin
@@ -73,6 +79,8 @@ always @(posedge clk or posedge rst) begin
         ID_EX_ALUOp <= 4'h0;
         ID_EX_ALUSrc1 <= 1'b0;
         ID_EX_ALUSrc2 <= 1'b0;
+        ID_EX_Sign <= 1'b0;
+        ID_EX_LuOp <= 1'b0;
         ID_EX_RegDst <= 2'b00;
         ID_EX_MemRd <= 1'b0;
         ID_EX_MemWr <= 1'b0;
@@ -80,6 +88,7 @@ always @(posedge clk or posedge rst) begin
         ID_EX_RegWr <= 1'b0;
         ID_EX_PC4 <= 32'h00000000;
         ID_EX_OpCode <= 6'h00;
+        ID_EX_ALUCtrl <= 5'h00;
     end
     else if (HzCtrl == 2'b00) begin
         ID_EX_PCSrc <= PCSrc;
@@ -89,16 +98,19 @@ always @(posedge clk or posedge rst) begin
         ID_EX_RsAddr <= IF_ID_RsAddr;
         ID_EX_RtAddr <= IF_ID_RtAddr;
         ID_EX_RdAddr <= IF_ID_RdAddr;
-        ID_EX_ALUOp <= IF_ID_ALUOp;
-        ID_EX_ALUSrc1 <= IF_ID_ALUSrc1;
-        ID_EX_ALUSrc2 <= IF_ID_ALUSrc2;
-        ID_EX_RegDst <= IF_ID_RegDst;
-        ID_EX_MemRd <= IF_ID_MemRd;
-        ID_EX_MemWr <= IF_ID_MemWr;
-        ID_EX_MemtoReg <= IF_ID_MemtoReg;
-        ID_EX_RegWr <= IF_ID_RegWr;
+        ID_EX_ALUOp <= ALUOp;
+        ID_EX_ALUSrc1 <= ALUSrc1;
+        ID_EX_ALUSrc2 <= ALUSrc2;
+        ID_EX_Sign <= Sign;
+        ID_EX_LuOp <= LuOp;
+        ID_EX_RegDst <= RegDst;
+        ID_EX_MemRd <= MemRd;
+        ID_EX_MemWr <= MemWr;
+        ID_EX_MemtoReg <= MemtoReg;
+        ID_EX_RegWr <= RegWr;
         ID_EX_PC4 <= IF_ID_PC4;
         ID_EX_OpCode <= IF_ID_OpCode;
+        ID_EX_ALUCtrl <= ALUCtrl;
     end
 end
 

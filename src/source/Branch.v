@@ -9,7 +9,7 @@
 // Module Name: Branch
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: Branch Control
 // 
 // Dependencies: None
@@ -22,10 +22,10 @@
 
 
 module Branch (
-    input OpCode,
+    input [5:0] OpCode,
     input [31:0] RsData,
     input [31:0] RtData,
-    output wire Branch,
+    output wire Branch
 );
 
 assign Branch = 

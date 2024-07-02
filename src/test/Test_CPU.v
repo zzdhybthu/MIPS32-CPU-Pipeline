@@ -9,7 +9,7 @@
 // Module Name: Test_CPU
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: Test CPU
 // 
 // Dependencies: None
@@ -28,7 +28,7 @@ reg clk, rst;
 
 CPU cpu (
     .clk(clk),
-    .rst(rst),
+    .rst(rst)
 );
 
 initial begin

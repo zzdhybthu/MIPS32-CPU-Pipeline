@@ -9,7 +9,7 @@
 // Module Name: CPU
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: CPU
 // 
 // Dependencies: None
@@ -23,7 +23,7 @@
 
 module CPU (
     input rst,
-    input clk,
+    input clk
 );
 
 // PC
@@ -47,6 +47,7 @@ wire [31:0] IF_ID_PC4;
 wire ExtOp, LuOp, ALUSrc1, ALUSrc2, Branch, RegWr, MemRd, MemWr;
 wire [1:0] PCSrc, MemtoReg, RegDst;
 wire [3:0] ALUOp;
+wire [4:0] ALUCtrl;
 wire [31:0] ImmExt;
 wire [31:0] RfRdData1, RfRdData2;
 
@@ -56,11 +57,14 @@ wire [1:0] ID_EX_HzCtrl;
 wire ID_EX_RegWr;
 wire ID_EX_MemRd, ID_EX_MemWr;
 wire ID_EX_ALUSrc1, ID_EX_ALUSrc2;
+wire ID_EX_LuOp;
 wire [1:0] ID_EX_PCSrc;
 wire [1:0] ID_EX_RegDst;
 wire [1:0] ID_EX_MemtoReg;
 wire [3:0] ID_EX_ALUOp;
 wire [4:0] ID_EX_RsAddr, ID_EX_RtAddr, ID_EX_RdAddr;
+wire [4:0] ID_EX_ALUCtrl;
+wire ID_EX_Sign;
 wire [5:0] ID_EX_OpCode;
 wire [31:0] ID_EX_Rs, ID_EX_Rt, ID_EX_ImmExt;
 wire [31:0] ID_EX_PC4;
@@ -69,7 +73,6 @@ wire [31:0] ID_EX_PC4;
 wire [1:0] EX_ForwardRs, EX_ForwardRt;
 wire [31:0] EX_Src1, EX_Src2;
 wire [31:0] ALU_In1, ALU_In2;
-wire [4:0] ALUCtrl;
 wire [31:0] ALUOut;
 wire Sign;
 wire [4:0] RegWrAddr;
@@ -113,12 +116,12 @@ assign EX_Src2 =
                 (EX_ForwardRt == 2'b00)? ID_EX_Rt :
                 (EX_ForwardRt == 2'b01)? EX_MEM_ALUOut :
                 RfWrData;
-assign ALU_In1 = ALUSrc1 ? {27'b0, ID_EX_ImmExt[10:6]} : EX_Src1;
-assign ALU_In2 = ALUSrc2 ? (LuOp ? {ID_EX_ImmExt[15:0], 16'b0} : ID_EX_ImmExt) : EX_Src2;
+assign ALU_In1 = ID_EX_ALUSrc1 ? {27'b0, ID_EX_ImmExt[10:6]} : EX_Src1;
+assign ALU_In2 = ID_EX_ALUSrc2 ? (ID_EX_LuOp ? {ID_EX_ImmExt[15:0], 16'b0} : ID_EX_ImmExt) : EX_Src2;
 
 assign RegWrAddr =
-                (ID_EX_RegDst == 2'b00)? ID_EX_Rt :
-                (ID_EX_RegDst == 2'b01)? ID_EX_Rd :
+                (ID_EX_RegDst == 2'b00)? ID_EX_RtAddr :
+                (ID_EX_RegDst == 2'b01)? ID_EX_RdAddr:
                 5'b11111;
 
 assign MemWrData = (MEM_ForwardRt == 1'b0)? EX_MEM_Rt : RfWrData;
@@ -142,7 +145,7 @@ assign ID_EX_HzCtrl =
                 2'b00;
 
 assign PC_Next = 
-                Branch ? (ID_EX_PC4 + ID_EX_ImmExt << 2) :  // branch
+                Branch ? (ID_EX_PC4 + (ID_EX_ImmExt << 2)) :  // branch
                 ID_EX_PCSrc == 2'b10 ? EX_Src1 :  // jump register
                 PCSrc == 2'b01 ? IF_ID_JumpAddr :  // jump
                 PC4;  // normal
@@ -155,12 +158,12 @@ PC pc (
     .Keep(PC_Keep),
     .PC_Next(PC_Next),
     .PC(PC),
-    .PC4(PC4),
+    .PC4(PC4)
 );
 
 Inst_Mem inst_mem (
     .Addr(PC),
-    .Inst(Inst),
+    .Inst(Inst)
 );
 
 IF_ID if_id (
@@ -176,7 +179,7 @@ IF_ID if_id (
     .IF_ID_OpCode(IF_ID_OpCode),
     .IF_ID_Funct(IF_ID_Funct),
     .IF_ID_JumpAddr(IF_ID_JumpAddr),
-    .IF_ID_PC4(IF_ID_PC4),
+    .IF_ID_PC4(IF_ID_PC4)
 );
 
 RF rf (
@@ -188,7 +191,7 @@ RF rf (
     .WrData(RfWrData),
     .RegWr(MEM_WB_RegWr),
     .RdData1(RfRdData1),
-    .RdData2(RfRdData2),
+    .RdData2(RfRdData2)
 );
 
 Ctrl ctrl (
@@ -204,7 +207,7 @@ Ctrl ctrl (
     .ALUSrc2(ALUSrc2),
     .ExtOp(ExtOp),
     .LuOp(LuOp),
-    .ALUOp(ALUOp),
+    .ALUOp(ALUOp)
 );
 
 ID_EX id_ex (
@@ -218,16 +221,19 @@ ID_EX id_ex (
     .IF_ID_RsAddr(IF_ID_RsAddr),
     .IF_ID_RtAddr(IF_ID_RtAddr),
     .IF_ID_RdAddr(IF_ID_RdAddr),
-    .IF_ID_ALUOp(ALUOp),
-    .IF_ID_ALUSrc1(ALUSrc1),
-    .IF_ID_ALUSrc2(ALUSrc2),
-    .IF_ID_RegDst(RegDst),
-    .IF_ID_MemRd(MemRd),
-    .IF_ID_MemWr(MemWr),
-    .IF_ID_MemtoReg(MemtoReg),
-    .IF_ID_RegWr(RegWr),
+    .ALUOp(ALUOp),
+    .ALUSrc1(ALUSrc1),
+    .ALUSrc2(ALUSrc2),
+    .Sign(Sign),
+    .LuOp(LuOp),
+    .RegDst(RegDst),
+    .MemRd(MemRd),
+    .MemWr(MemWr),
+    .MemtoReg(MemtoReg),
+    .RegWr(RegWr),
     .IF_ID_PC4(IF_ID_PC4),
     .IF_ID_OpCode(IF_ID_OpCode),
+    .ALUCtrl(ALUCtrl),
     .ID_EX_PCSrc(ID_EX_PCSrc),
     .ID_EX_Rs(ID_EX_Rs),
     .ID_EX_Rt(ID_EX_Rt),
@@ -238,6 +244,8 @@ ID_EX id_ex (
     .ID_EX_ALUOp(ID_EX_ALUOp),
     .ID_EX_ALUSrc1(ID_EX_ALUSrc1),
     .ID_EX_ALUSrc2(ID_EX_ALUSrc2),
+    .ID_EX_Sign(ID_EX_Sign),
+    .ID_EX_LuOp(ID_EX_LuOp),
     .ID_EX_RegDst(ID_EX_RegDst),
     .ID_EX_MemRd(ID_EX_MemRd),
     .ID_EX_MemWr(ID_EX_MemWr),
@@ -245,39 +253,42 @@ ID_EX id_ex (
     .ID_EX_RegWr(ID_EX_RegWr),
     .ID_EX_PC4(ID_EX_PC4),
     .ID_EX_OpCode(ID_EX_OpCode),
+    .ID_EX_ALUCtrl(ID_EX_ALUCtrl)
 );
 
-EX_Forward ex_forward (
+Forward forward (
     .ID_EX_RsAddr(ID_EX_RsAddr),
     .ID_EX_RtAddr(ID_EX_RtAddr),
     .EX_MEM_RegWrAddr(EX_MEM_RegWrAddr),
+    .EX_MEM_RtAddr(EX_MEM_RtAddr),
     .EX_MEM_RegWr(EX_MEM_RegWr),
     .MEM_WB_RegWrAddr(MEM_WB_RegWrAddr),
     .MEM_WB_RegWr(MEM_WB_RegWr),
     .EX_ForwardRs(EX_ForwardRs),
     .EX_ForwardRt(EX_ForwardRt),
+    .MEM_ForwardRt(MEM_ForwardRt)
 );
 
 ALU_Ctrl alu_ctrl (
     .ALUOp(ALUOp),
-    .Funct(Funct),
+    .Funct(IF_ID_Funct),
     .ALUCtrl(ALUCtrl),
-    .Sign(Sign),
+    .Sign(Sign)
 );
 
 Branch branch (
     .OpCode(ID_EX_OpCode),
     .RsData(EX_Src1),
     .RtData(EX_Src2),
-    .Branch(Branch),
+    .Branch(Branch)
 );
 
 ALU alu (
     .In1(ALU_In1),
     .In2(ALU_In2),
-    .ALUCtrl(ALUCtrl),
-    .Sign(Sign),
-    .Out(ALUOut),
+    .ALUCtrl(ID_EX_ALUCtrl),
+    .Sign(ID_EX_Sign),
+    .Out(ALUOut)
 );
 
 EX_MEM ex_mem (
@@ -300,14 +311,7 @@ EX_MEM ex_mem (
     .EX_MEM_MemWr(EX_MEM_MemWr),
     .EX_MEM_MemtoReg(EX_MEM_MemtoReg),
     .EX_MEM_RegWr(EX_MEM_RegWr),
-    .EX_MEM_PC4(EX_MEM_PC4),
-);
-
-MEM_Forward mem_forward (
-    .EX_MEM_RtAddr(EX_MEM_RtAddr),
-    .MEM_WB_RegWrAddr(MEM_WB_RegWrAddr),
-    .MEM_WB_RegWr(MEM_WB_RegWr),
-    .MEM_ForwardRt(MEM_ForwardRt),
+    .EX_MEM_PC4(EX_MEM_PC4)
 );
 
 Data_Mem data_mem (
@@ -317,7 +321,7 @@ Data_Mem data_mem (
     .MemWr(EX_MEM_MemWr),
     .Addr(EX_MEM_ALUOut),
     .WrData(MemWrData),
-    .RdData(MemRdData),
+    .RdData(MemRdData)
 );
 
 MEM_WB mem_wb (
@@ -334,7 +338,7 @@ MEM_WB mem_wb (
     .MEM_WB_RegWrAddr(MEM_WB_RegWrAddr),
     .MEM_WB_MemtoReg(MEM_WB_MemtoReg),
     .MEM_WB_RegWr(MEM_WB_RegWr),
-    .MEM_WB_PC4(MEM_WB_PC4),
+    .MEM_WB_PC4(MEM_WB_PC4)
 );
 
 

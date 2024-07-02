@@ -9,7 +9,7 @@
 // Module Name: EX_MEM
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: EX/MEM Register
 // 
 // Dependencies: None
@@ -41,7 +41,7 @@ module EX_MEM (
     output reg EX_MEM_MemWr,
     output reg [1:0] EX_MEM_MemtoReg,
     output reg EX_MEM_RegWr,
-    output reg [31:0] EX_MEM_PC4,
+    output reg [31:0] EX_MEM_PC4
 );
 
 always @(posedge clk or posedge rst) begin

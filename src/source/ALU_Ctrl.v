@@ -9,7 +9,7 @@
 // Module Name: ALU_Ctrl
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: ALU Control Unit
 // 
 // Dependencies: None
@@ -25,7 +25,7 @@ module ALU_Ctrl (
 	input [3:0] ALUOp,
 	input [5:0] Funct,
 	output reg [4:0] ALUCtrl,
-	output wire Sign,
+	output wire Sign
 );
 	
 	parameter aluAND = 5'b00000;
@@ -40,11 +40,11 @@ module ALU_Ctrl (
 	parameter aluSRA = 5'b11001;
 	parameter aluMUL = 5'b11010;
 	
-	assign Sign = (ALUOp[2:0] == 3'b010)? ~Funct[0]: ~ALUOp[3];
+	assign Sign = (ALUOp[2:0] == 3'b010) ? ~Funct[0] : ~ALUOp[3];
 	
 	reg [4:0] aluFunct;
 	always @(*)
-		case (Funct)
+		casez (Funct)
 			6'b00_0000: aluFunct <= aluSLL;
 			6'b00_0010: aluFunct <= aluSRL;
 			6'b00_0011: aluFunct <= aluSRA;

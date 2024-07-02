@@ -9,7 +9,7 @@
 // Module Name: RF
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: Register File
 // 
 // Dependencies: None
@@ -30,7 +30,7 @@ module RF (
 	input [31:0] WrData,
 	input RegWr,
 	output wire [31:0] RdData1,
-	output wire [31:0] RdData2,
+	output wire [31:0] RdData2
 );
 
 reg [31:0] RF_data [31:1];
@@ -42,7 +42,7 @@ assign RdData2 = RtAddr == 0 ? 32'h00000000 :
 				 RegWr && WrAddr == RtAddr ? WrData :
 				 RF_data[RtAddr];
 
-initial i;
+integer i;
 initial begin
 	for (i = 1; i < 32; i = i + 1) begin
 		RF_data[i] = 32'h00000000;

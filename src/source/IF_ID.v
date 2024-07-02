@@ -9,7 +9,7 @@
 // Module Name: IF_ID
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: IF/ID Register
 // 
 // Dependencies: None
@@ -34,7 +34,7 @@ module IF_ID (
     output reg [5:0] IF_ID_OpCode,
     output reg [5:0] IF_ID_Funct,
     output reg [25:0] IF_ID_JumpAddr,
-    output reg [31:0] IF_ID_PC4,
+    output reg [31:0] IF_ID_PC4
 );
 
 always @(posedge clk or posedge rst) begin
@@ -55,7 +55,7 @@ always @(posedge clk or posedge rst) begin
         IF_ID_Imm <= Inst[15:0];
         IF_ID_OpCode <= Inst[31:26];
         IF_ID_Funct <= Inst[5:0];
-        IF_ID_JumpAddr <= {PC4[31:28], Inst[25:0], 2'h00};
+        IF_ID_JumpAddr <= {PC4[31:28], Inst[25:0], 2'b00};
         IF_ID_PC4 <= PC4;
     end
 end

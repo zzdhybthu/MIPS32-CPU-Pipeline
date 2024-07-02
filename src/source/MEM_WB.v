@@ -9,7 +9,7 @@
 // Module Name: MEM_WB
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: MEM/WB Register
 // 
 // Dependencies: None
@@ -35,7 +35,7 @@ module MEM_WB (
     output reg [4:0] MEM_WB_RegWrAddr,
     output reg [1:0] MEM_WB_MemtoReg,
     output reg MEM_WB_RegWr,
-    output reg [31:0] MEM_WB_PC4,
+    output reg [31:0] MEM_WB_PC4
 );
 
 always @(posedge clk or posedge rst) begin

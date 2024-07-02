@@ -9,7 +9,7 @@
 // Module Name: PC
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: PC Register
 // 
 // Dependencies: None
@@ -27,7 +27,7 @@ module PC (
     input Keep,
     input [31:0] PC_Next,
     output wire [31:0] PC,
-    output wire [31:0] PC4,
+    output wire [31:0] PC4
 );
 
 reg [31:0] PC_Reg;
@@ -41,6 +41,7 @@ always @(posedge clk or posedge rst) begin
     end
 end
 
+assign PC = PC_Reg;
 assign PC4 = PC_Reg + 32'h00000004;
 
 endmodule

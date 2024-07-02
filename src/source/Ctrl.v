@@ -9,7 +9,7 @@
 // Module Name: Ctrl
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
-// Tool Versions: Vivado 2018.3
+// Tool Versions: Vivado 2017.4
 // Description: Control Unit
 // 
 // Dependencies: None
@@ -34,7 +34,7 @@ module Ctrl(
 	output wire ALUSrc2,
 	output wire ExtOp,
 	output wire LuOp,
-	output wire [3:0] ALUOp,
+	output wire [3:0] ALUOp
 );
 
 	assign PCSrc =
@@ -53,11 +53,11 @@ module Ctrl(
 		(OpCode == 6'h03) ? 2'b10: // JAL, use 31
 		2'b00; // I-type, use Rt
 
-	assign MemRead = 
+	assign MemRd = 
 		(OpCode == 6'h23) ? 1'b1:  // lw
 		1'b0;  // others
 	
-	assign MemWrite = 
+	assign MemWr = 
 		(OpCode == 6'h2b) ? 1'b1:  // sw
 		1'b0;  // others
 	
