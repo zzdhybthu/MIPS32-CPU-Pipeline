@@ -72,7 +72,7 @@ wire [31:0] ID_EX_PC4;
 // EX
 wire [1:0] EX_ForwardRs, EX_ForwardRt;
 wire [31:0] EX_Src1, EX_Src2;
-wire [31:0] ALU_In1, ALU_In2;
+wire [31:0] ALUIn1, ALUIn2;
 wire [31:0] ALUOut;
 wire Sign;
 wire [4:0] RegWrAddr;
@@ -116,8 +116,8 @@ assign EX_Src2 =
                 (EX_ForwardRt == 2'b00)? ID_EX_Rt :
                 (EX_ForwardRt == 2'b01)? EX_MEM_ALUOut :
                 RfWrData;
-assign ALU_In1 = ID_EX_ALUSrc1 ? {27'b0, ID_EX_ImmExt[10:6]} : EX_Src1;
-assign ALU_In2 = ID_EX_ALUSrc2 ? (ID_EX_LuOp ? {ID_EX_ImmExt[15:0], 16'b0} : ID_EX_ImmExt) : EX_Src2;
+assign ALUIn1 = ID_EX_ALUSrc1 ? {27'b0, ID_EX_ImmExt[10:6]} : EX_Src1;
+assign ALUIn2 = ID_EX_ALUSrc2 ? (ID_EX_LuOp ? {ID_EX_ImmExt[15:0], 16'b0} : ID_EX_ImmExt) : EX_Src2;
 
 assign RegWrAddr =
                 (ID_EX_RegDst == 2'b00)? ID_EX_RtAddr :
@@ -284,11 +284,11 @@ Branch branch (
 );
 
 ALU alu (
-    .In1(ALU_In1),
-    .In2(ALU_In2),
+    .ALUIn1(ALUIn1),
+    .ALUIn2(ALUIn2),
     .ALUCtrl(ID_EX_ALUCtrl),
     .Sign(ID_EX_Sign),
-    .Out(ALUOut)
+    .ALUOut(ALUOut)
 );
 
 EX_MEM ex_mem (
