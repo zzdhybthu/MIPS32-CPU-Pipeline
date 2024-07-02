@@ -4,3 +4,6 @@
 [submodule "Pipeline-CPU"]
 	path = reference/PipelineCPU
 	url = git@github.com:Timothy-Liuxf/PipelineCPU.git
+[submodule "MIPS_Pipeline"]
+	path = reference/MIPS_Pipeline
+	url = git@github.com:DragonAura/MIPS_Pipeline.git
