@@ -32,9 +32,13 @@ module PC (
 
 reg [31:0] PC_Reg;
 
+initial begin
+    PC_Reg <= 32'h00400000;
+end
+
 always @(posedge clk or posedge rst) begin
     if (rst) begin
-        PC_Reg <= 32'h00000000;
+        PC_Reg <= 32'h00400000;
     end
     else if (!Keep) begin
         PC_Reg <= PC_Next;

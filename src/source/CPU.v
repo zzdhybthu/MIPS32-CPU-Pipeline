@@ -132,7 +132,7 @@ assign RfWrData =
                 MEM_WB_PC4;
 
 assign LdUseHazard = 
-                (ID_EX_MemRd && (ID_EX_RtAddr == IF_ID_RsAddr || ID_EX_RtAddr == IF_ID_RtAddr)) ? 1'b1 :
+                (ID_EX_MemRd && (ID_EX_RtAddr == IF_ID_RsAddr || ID_EX_RtAddr == IF_ID_RtAddr) && !MemWr) ? 1'b1 :
                 1'b0;
 
 assign IF_ID_HzCtrl = 
