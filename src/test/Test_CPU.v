@@ -19,3 +19,25 @@
 // Additional Comments: None
 // 
 //////////////////////////////////////////////////////////////////////////////////
+
+
+module Test_CPU (
+
+);
+reg clk, rst;
+
+CPU cpu (
+    .clk(clk),
+    .rst(rst),
+);
+
+initial begin
+    clk = 1'b0;
+    rst = 1'b1;
+    #100 rst = 1'b0;
+end
+
+always #50 clk = ~clk;
+
+
+endmodule

@@ -247,7 +247,7 @@ ID_EX id_ex (
     .ID_EX_OpCode(ID_EX_OpCode),
 );
 
-Ex_Forward ex_forward (
+EX_Forward ex_forward (
     .ID_EX_RsAddr(ID_EX_RsAddr),
     .ID_EX_RtAddr(ID_EX_RtAddr),
     .EX_MEM_RegWrAddr(EX_MEM_RegWrAddr),

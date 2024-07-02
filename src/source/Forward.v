@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module Ex_Forward (
+module EX_Forward (
     input [4:0] ID_EX_RsAddr,
     input [4:0] ID_EX_RtAddr,
     input [4:0] EX_MEM_RegWrAddr,
