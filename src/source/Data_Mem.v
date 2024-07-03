@@ -31,13 +31,14 @@ module Data_Mem (
 	output [31:0] RdData
 );
 	
-	parameter RAM_SIZE = 256;  // 0x00000000 ~ 0x000007FF
+	parameter RAM_SIZE = 512;  // 0x00000000 ~ 0x000007FF
+	parameter RAM_ADDR_WIDTH = 9;  // 2^9 = 512
 	
 	reg [31:0] RAM_data [RAM_SIZE - 1 : 0];
 	reg [31:0] Digit;
 
-	wire [29:0] Addr_word;
-	assign Addr_word = Addr[31:2];
+	wire [RAM_ADDR_WIDTH - 1 : 0] Addr_word;
+	assign Addr_word = Addr[RAM_ADDR_WIDTH + 1 : 2];
 
 	assign RdData = !MemRd ? 32'h00000000 :
 					   Addr_word < RAM_SIZE ? RAM_data[Addr_word] :
@@ -48,15 +49,6 @@ module Data_Mem (
 	integer i;
 
 	initial begin
-		for (i = 0; i < RAM_SIZE; i = i + 1) begin
-			RAM_data[i] <= 32'h00000000;
-		end
-		Digit <= 32'h00000000;
-	end
-
-
-	always @(posedge rst or posedge clk) begin
-		if (rst) begin
 
             // // single cycle processor test case 2
 
@@ -111,9 +103,19 @@ module Data_Mem (
 
 
 			Digit <= 32'h00000000;
+
+	end
+
+
+	always @(posedge rst or posedge clk) begin
+		if (rst) begin
+            for (i = 0; i < RAM_SIZE; i = i + 1) begin
+               RAM_data[i] <= 32'h00000000;
+			end
+			Digit <= 32'h00000000;
 		end
 		else if (MemWr) begin
-			RAM_data[Addr[9:2]] <= WrData;
+			RAM_data[Addr_word] <= WrData;
 		end
 	end
 			

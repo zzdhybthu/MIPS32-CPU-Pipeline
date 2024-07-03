@@ -6,7 +6,7 @@ def read_instructions(file_path):
 def format_instructions(instructions):
     formatted_lines = []
     for i, instruction in enumerate(instructions):
-        formatted_line = f"8'd{i}: Inst <= 32'h{instruction};"
+        formatted_line = f"9'd{i}: Inst <= 32'h{instruction};"
         formatted_lines.append(formatted_line)
     return formatted_lines
 
