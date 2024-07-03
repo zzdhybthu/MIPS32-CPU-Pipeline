@@ -4,13 +4,13 @@
 // Company: Tsinghua University
 // Engineer: zzdhybthu
 // 
-// Create Date: 2024/07/02 18:10:00
+// Create Date: 2024/07/03 14:25:00
 // Design Name: MIPS32-CPU-Pipeline
-// Module Name: Test_CPU
+// Module Name: Clock
 // Project Name: MIPS32-CPU-Pipeline
 // Target Devices: xc7a35tfgg484-1
 // Tool Versions: Vivado 2017.4
-// Description: Test CPU
+// Description: Clock Module
 // 
 // Dependencies: None
 // 
@@ -21,29 +21,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module Test_CPU (
-
-);
-reg clk, rst;
-wire [6:0] Seg;
-wire Dot;
-wire [3:0] Sel;
-
-CPU cpu (
-    .clk(clk),
-    .rst(rst),
-    .Seg(Seg),
-    .Dot(Dot),
-    .Sel(Sel)
+module Clock(
+    input rst,
+    input clk,
+    output reg ClockNew
 );
 
-initial begin
-    clk = 1'b0;
-    rst = 1'b1;
-    #100 rst = 1'b0;
-end
+    parameter CNT = 16'd5;
 
-always #50 clk = ~clk;
+    reg [15:0] Count;
 
+    always @(posedge clk or posedge rst) begin
+        if(rst) begin
+            ClockNew <= 1'b0;
+            Count <= 16'b0;
+        end
+        else begin
+            Count <= (Count == CNT - 16'b1) ? 16'b0 : Count + 16'b1;
+            ClockNew <= (Count == 16'b0) ? ~ClockNew : ClockNew;
+        end
+    end
 
 endmodule

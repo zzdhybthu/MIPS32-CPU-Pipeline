@@ -23,8 +23,14 @@
 
 module CPU (
     input rst,
-    input clk
+    input sysclk,
+    output wire [6:0] Seg,
+    output wire Dot,
+    output wire [3:0] Sel
 );
+
+// Clock
+wire clk;
 
 // PC
 wire [31:0] PC;
@@ -102,6 +108,9 @@ wire [31:0] MEM_WB_PC4;
 // WB
 wire [31:0] RfWrData;
 
+// Peripherals
+wire [11:0] RAM_Digi;
+
 
 
 assign PC_Keep = LdUseHazard ? 1'b1 : 1'b0;  // load-use hazard, keep
@@ -151,6 +160,17 @@ assign PC_Next =
                 PC4;  // normal
 
 
+assign Seg = RAM_Digi[6:0];
+assign Dot = RAM_Digi[7];
+assign Sel = RAM_Digi[11:8];
+
+
+
+Clock clock (
+    .rst(rst),
+    .clk(sysclk),
+    .ClockNew(clk)
+);
 
 PC pc (
     .rst(rst),
@@ -321,7 +341,8 @@ Data_Mem data_mem (
     .MemWr(EX_MEM_MemWr),
     .Addr(EX_MEM_ALUOut),
     .WrData(MemWrData),
-    .RdData(MemRdData)
+    .RdData(MemRdData),
+    .RAM_Digi(RAM_Digi)
 );
 
 MEM_WB mem_wb (

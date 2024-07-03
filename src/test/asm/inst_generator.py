@@ -16,7 +16,7 @@ def write_formatted_instructions(file_path, formatted_lines):
             file.write(line + '\n')
 
 def main():
-    input_file = 'binary_insert_sort.txt'
+    input_file = 'binary_insert_sort.hex'
     output_file = 'binary_insert_sort.inst'
 
     instructions = read_instructions(input_file)
@@ -24,7 +24,7 @@ def main():
 
     write_formatted_instructions(output_file, formatted_lines)
     
-    input_file = 'insert_sort.txt'
+    input_file = 'insert_sort.hex'
     output_file = 'insert_sort.inst'
     
     instructions = read_instructions(input_file)

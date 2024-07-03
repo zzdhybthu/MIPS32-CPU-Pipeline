@@ -3,13 +3,10 @@ def read_numbers_from_file(file_path):
         numbers = file.read().strip().split()
     return [int(num) for num in numbers]
 
-def convert_to_hex(numbers):
-    return [f"{num:08x}" for num in numbers]
-
-def format_to_verilog(hex_numbers):
+def format_to_verilog(numbers):
     verilog_lines = []
-    for i, hex_num in enumerate(hex_numbers):
-        verilog_lines.append(f"RAM_data[{i}] <= 32'h{hex_num};")
+    for i, num in enumerate(numbers):
+        verilog_lines.append(f"li $t0, {num}\nsw $t0, {i * 4}($zero)")
     return verilog_lines
 
 def write_to_file(file_path, lines):
@@ -19,11 +16,10 @@ def write_to_file(file_path, lines):
 
 def main():
     input_file = 'data.txt'
-    output_file = 'data.mem'
+    output_file = 'data.asm'
     
     numbers = read_numbers_from_file(input_file)
-    hex_numbers = convert_to_hex(numbers)
-    verilog_lines = format_to_verilog(hex_numbers)
+    verilog_lines = format_to_verilog(numbers)
 
     write_to_file(output_file, verilog_lines)
 
