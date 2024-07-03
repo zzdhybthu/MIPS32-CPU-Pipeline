@@ -43,7 +43,7 @@ module Data_Mem (
 					   Addr_word < RAM_SIZE ? RAM_data[Addr_word] :
 					   Addr_word == 30'h40000010 ? Digit :
 					   32'h00000000;
-		
+	
 	
 	integer i;
 
@@ -53,6 +53,7 @@ module Data_Mem (
 		end
 		Digit <= 32'h00000000;
 	end
+
 
 	always @(posedge rst or posedge clk) begin
 		if (rst) begin

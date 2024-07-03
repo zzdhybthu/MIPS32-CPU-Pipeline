@@ -44,16 +44,22 @@ assign RdData2 = RtAddr == 0 ? 32'h00000000 :
 
 integer i;
 initial begin
-	for (i = 1; i < 32; i = i + 1) begin
+	for (i = 1; i < 29; i = i + 1) begin
 		RF_data[i] = 32'h00000000;
 	end
+	RF_data[29] = 32'h000007FF;
+	RF_data[30] = 32'h00000000;
+	RF_data[31] = 32'h00000000;
 end
 
 always @(posedge rst or posedge clk) begin
 	if (rst) begin
-		for (i = 1; i < 32; i = i + 1) begin
+		for (i = 1; i < 29; i = i + 1) begin
 			RF_data[i] = 32'h00000000;
 		end
+		RF_data[29] = 32'h000007FF;
+		RF_data[30] = 32'h00000000;
+		RF_data[31] = 32'h00000000;
 	end
 	else begin
 		if (RegWr && WrAddr != 0) begin
