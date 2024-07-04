@@ -30,6 +30,11 @@ module Clock(
     parameter CNT = 16'd5;
 
     reg [15:0] Count;
+    
+    initial begin
+        ClockNew <= 1'b0;
+        Count <= 16'b0;
+    end
 
     always @(posedge clk or posedge rst) begin
         if(rst) begin

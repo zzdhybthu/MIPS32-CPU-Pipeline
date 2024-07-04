@@ -67,6 +67,29 @@ module ID_EX (
     output reg [4:0] ID_EX_ALUCtrl
 );
 
+initial  begin
+        ID_EX_PCSrc <= 2'b00;
+        ID_EX_Rs <= 32'h00000000;
+        ID_EX_Rt <= 32'h00000000;
+        ID_EX_ImmExt <= 32'h00000000;
+        ID_EX_RsAddr <= 5'h00;
+        ID_EX_RtAddr <= 5'h00;
+        ID_EX_RdAddr <= 5'h00;
+        ID_EX_ALUOp <= 4'h0;
+        ID_EX_ALUSrc1 <= 1'b0;
+        ID_EX_ALUSrc2 <= 1'b0;
+        ID_EX_Sign <= 1'b0;
+        ID_EX_LuOp <= 1'b0;
+        ID_EX_RegDst <= 2'b00;
+        ID_EX_MemRd <= 1'b0;
+        ID_EX_MemWr <= 1'b0;
+        ID_EX_MemtoReg <= 2'b00;
+        ID_EX_RegWr <= 1'b0;
+        ID_EX_PC4 <= 32'h00000000;
+        ID_EX_OpCode <= 6'h00;
+        ID_EX_ALUCtrl <= 5'h00;
+    end
+
 always @(posedge clk or posedge rst) begin
     if (rst || HzCtrl == 2'b01) begin
         ID_EX_PCSrc <= 2'b00;

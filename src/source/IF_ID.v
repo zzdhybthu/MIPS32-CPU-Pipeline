@@ -37,6 +37,18 @@ module IF_ID (
     output reg [31:0] IF_ID_PC4
 );
 
+
+initial begin
+        IF_ID_RsAddr <= 5'h00;
+        IF_ID_RtAddr <= 5'h00;
+        IF_ID_RdAddr <= 5'h00;
+        IF_ID_Imm <= 16'h0000;
+        IF_ID_OpCode <= 6'h00;
+        IF_ID_Funct <= 6'h00;
+        IF_ID_JumpAddr <= 26'h0000000;
+        IF_ID_PC4 <= 32'h00000000;
+end
+
 always @(posedge clk or posedge rst) begin
     if (rst || HzCtrl == 2'b01) begin
         IF_ID_RsAddr <= 5'h00;

@@ -32,7 +32,10 @@ module ALU (
 	wire lt_signed;
 	assign lt_signed = (ALUIn1[31] ^ ALUIn2[31]) ? (({ALUIn1[31], ALUIn2[31]} == 2'b01) ? 0 : 1) : (ALUIn1[30:0] < ALUIn2[30:0]);
 	
-
+    initial begin
+    ALUOut <= 32'h00000000;
+    end
+    
 	always @(*) begin
 		case (ALUCtrl)
 			5'b00000: ALUOut <= ALUIn1 & ALUIn2;

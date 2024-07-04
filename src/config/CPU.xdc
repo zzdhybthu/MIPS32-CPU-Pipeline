@@ -1,7 +1,7 @@
-set_property -dict {PACKAGE_PIN R4  IOSTANDARD LVCMOS33} [get_ports {sysclk}]
-set_property -dict {PACKAGE_PIN B22  IOSTANDARD LVCMOS33} [get_ports {rst}]
+set_property -dict {PACKAGE_PIN R4  IOSTANDARD LVCMOS33} [get_ports sysclk]
+set_property -dict {PACKAGE_PIN B22  IOSTANDARD LVCMOS33} [get_ports rst]
 
-create_clock -period 10.000 -name CLK -waveform {0.000 5.000} [get_ports {sysclk}]
+#create_clock -period 10.000 -name CLK -waveform {0.000 5.000} [get_ports sysclk]
 
 set_property -dict {PACKAGE_PIN N2 IOSTANDARD LVCMOS33} [get_ports {Seg[0]}]
 set_property -dict {PACKAGE_PIN P5 IOSTANDARD LVCMOS33} [get_ports {Seg[1]}]
@@ -16,4 +16,4 @@ set_property -dict {PACKAGE_PIN P2  IOSTANDARD LVCMOS33} [get_ports {Sel[1]}]
 set_property -dict {PACKAGE_PIN R1  IOSTANDARD LVCMOS33} [get_ports {Sel[2]}]
 set_property -dict {PACKAGE_PIN Y3  IOSTANDARD LVCMOS33} [get_ports {Sel[3]}]
 
-set_property -dict {PACKAGE_PIN V3 IOSTANDARD LVCMOS33} [get_ports {Dot}]
+set_property -dict {PACKAGE_PIN V3 IOSTANDARD LVCMOS33} [get_ports Dot]

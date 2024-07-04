@@ -52,7 +52,7 @@ initial begin
 	RF_data[31] = 32'h00000000;
 end
 
-always @(posedge rst or posedge clk) begin
+always @(posedge clk or posedge rst) begin
 	if (rst) begin
 		for (i = 1; i < 29; i = i + 1) begin
 			RF_data[i] = 32'h00000000;

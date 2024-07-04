@@ -31,6 +31,7 @@ module CPU (
 
 // Clock
 wire clk;
+wire locked;
 
 // PC
 wire [31:0] PC;
@@ -112,6 +113,7 @@ wire [31:0] RfWrData;
 wire [11:0] RAM_Digi;
 
 
+assign locked = 0;
 
 assign PC_Keep = LdUseHazard ? 1'b1 : 1'b0;  // load-use hazard, keep
 
@@ -165,12 +167,20 @@ assign Dot = RAM_Digi[7];
 assign Sel = RAM_Digi[11:8];
 
 
+clk_wiz_75 clk_wiz_75_inst (
+ .clk_out1(clk),
+ .reset(rst),
+ .locked(locked),
+ .clk_in1(sysclk)
+ );
 
-Clock clock (
-    .rst(rst),
-    .clk(sysclk),
-    .ClockNew(clk)
-);
+//Clock clock (
+//    .rst(rst),
+//    .clk(sysclk),
+//    .ClockNew(clk)
+//);
+
+//assign clk = sysclk;
 
 PC pc (
     .rst(rst),

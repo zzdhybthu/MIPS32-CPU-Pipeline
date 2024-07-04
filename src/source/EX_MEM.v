@@ -44,6 +44,19 @@ module EX_MEM (
     output reg [31:0] EX_MEM_PC4
 );
 
+
+initial begin
+        EX_MEM_RegWrAddr <= 5'h00;
+        EX_MEM_ALUOut <= 32'h00000000;
+        EX_MEM_RtAddr <= 5'h00;
+        EX_MEM_Rt <= 32'h00000000;
+        EX_MEM_MemRd <= 1'b0;
+        EX_MEM_MemWr <= 1'b0;
+        EX_MEM_MemtoReg <= 2'b00;
+        EX_MEM_RegWr <= 1'b0;
+        EX_MEM_PC4 <= 32'h00000000;
+    end
+
 always @(posedge clk or posedge rst) begin
     if (rst) begin
         EX_MEM_RegWrAddr <= 5'h00;

@@ -43,6 +43,12 @@ module ALU_Ctrl (
 	assign Sign = (ALUOp[2:0] == 3'b010) ? ~Funct[0] : ~ALUOp[3];
 	
 	reg [4:0] aluFunct;
+	
+	initial begin
+	aluFunct <= aluADD;
+	ALUCtrl <= aluADD;
+	end
+	
 	always @(*)
 		casez (Funct)
 			6'b00_0000: aluFunct <= aluSLL;

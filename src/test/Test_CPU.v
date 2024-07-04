@@ -30,7 +30,7 @@ wire Dot;
 wire [3:0] Sel;
 
 CPU cpu (
-    .clk(clk),
+    .sysclk(clk),
     .rst(rst),
     .Seg(Seg),
     .Dot(Dot),
@@ -39,11 +39,12 @@ CPU cpu (
 
 initial begin
     clk = 1'b0;
-    rst = 1'b1;
-    #100 rst = 1'b0;
+    rst = 1'b0;
+//    rst = 1'b1;
+//    #100 rst = 1'b0;
 end
 
-always #50 clk = ~clk;
+always #5 clk = ~clk;
 
 
 endmodule

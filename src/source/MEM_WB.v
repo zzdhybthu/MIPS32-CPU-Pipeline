@@ -38,6 +38,16 @@ module MEM_WB (
     output reg [31:0] MEM_WB_PC4
 );
 
+
+initial begin
+        MEM_WB_MemRdData <= 32'h00000000;
+        MEM_WB_ALUOut <= 32'h00000000;
+        MEM_WB_RegWrAddr <= 5'h00;
+        MEM_WB_MemtoReg <= 2'b00;
+        MEM_WB_RegWr <= 1'b0;
+        MEM_WB_PC4 <= 32'h00000000;
+    end
+
 always @(posedge clk or posedge rst) begin
     if (rst) begin
         MEM_WB_MemRdData <= 32'h00000000;
