@@ -137,6 +137,48 @@ jr $s5
 
 sort_done:
 
+# send data
+
+li $s0, 1073741848  # 0x40000018, UART_TXD
+                    # 0x4000001C, UART_RXD
+                    # 0x40000020, UART_CONFIG
+lw $a1, -4($s0)  # n
+li $a0, 0
+send_loop:
+beq $a0, $a1, send_done
+lw $t0, 0($a0)
+srl $t1, $t0, 24  # $t1 = $t0[31:24]
+sll $t2, $t0, 8  # $t2 = $t0[23:16]
+srl $t2, $t2, 24
+sll $t3, $t0, 16  # $t3 = $t0[15:8]
+srl $t3, $t3, 24
+sll $t4, $t0, 24  # $t4 = $t0[7:0]
+srl $t4, $t4, 24
+sw $t1, 0($s0)
+jal send_wait_loop
+sw $t2, 0($s0)
+jal send_wait_loop
+sw $t3, 0($s0)
+jal send_wait_loop
+sw $t4, 0($s0)
+jal send_wait_loop
+addi $a0, $a0, 4
+j send_loop
+
+
+send_wait_loop:
+lw $t0, 8($s0)
+sll $t0, $t0, 29  # TxDone
+srl $t0, $t0, 31
+beq $t0, $zero, send_wait_loop
+jr $ra
+
+
+
+
+
+send_done:
+
 # show result using led
 
 li $s0, 2047  # 0x000007FF
@@ -247,45 +289,4 @@ jr $ra
 
 show_end:
 
-# send data
-
-li $s0, 1073741848  # 0x40000018, UART_TXD
-                    # 0x4000001C, UART_RXD
-                    # 0x40000020, UART_CONFIG
-lw $a1, -4($s0)  # n
-li $a0, 0
-send_loop:
-beq $a0, $a1, send_done
-lw $t0, 0($a0)
-srl $t1, $t0, 24  # $t1 = $t0[31:24]
-sll $t2, $t0, 8  # $t2 = $t0[23:16]
-srl $t2, $t2, 24
-sll $t3, $t0, 16  # $t3 = $t0[15:8]
-srl $t3, $t3, 24
-sll $t4, $t0, 24  # $t4 = $t0[7:0]
-srl $t4, $t4, 24
-sw $t1, 0($s0)
-jal send_wait_loop
-sw $t2, 0($s0)
-jal send_wait_loop
-sw $t3, 0($s0)
-jal send_wait_loop
-sw $t4, 0($s0)
-jal send_wait_loop
-addi $a0, $a0, 4
-j send_loop
-
-
-send_wait_loop:
-lw $t0, 8($s0)
-sll $t0, $t0, 29  # TxDone
-srl $t0, $t0, 31
-beq $t0, $zero, send_wait_loop
-jr $ra
-
-
-
-
-
-send_done:
-j send_done
+j show_end

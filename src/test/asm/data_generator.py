@@ -14,14 +14,22 @@ def write_to_file(file_path, lines):
         for line in lines:
             file.write(line + '\n')
 
+def decs_to_hexstr(decs):
+    hexs = [hex(dec)[2:].zfill(8).upper() for dec in decs]
+    str_hexs = "".join(hexs)
+    return f"{32 * len(hexs)}'h" + "_".join(hexs), " ".join([str_hexs[i:i+2] for i in range(0, len(str_hexs), 2)])
+    
 def main():
     input_file = 'data.txt'
-    output_file = 'data.asm'
+    output_file_asm = 'data.asm'
+    output_file_hex = 'data.hex'
     
     numbers = read_numbers_from_file(input_file)
     verilog_lines = format_to_verilog(numbers)
+    hex_lines, hex_list = decs_to_hexstr(numbers)
 
-    write_to_file(output_file, verilog_lines)
+    write_to_file(output_file_asm, verilog_lines)
+    write_to_file(output_file_hex, [hex_lines, hex_list])
 
 if __name__ == "__main__":
     main()
