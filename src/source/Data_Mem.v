@@ -34,7 +34,7 @@ module Data_Mem (
     output wire TxSerial
 );
 	
-	parameter RAM_SIZE = 512;  // 0x00000000 ~ 0x000007FF
+	parameter RAM_SIZE = 512;  // 0x00000000 ~ 0x000007FC
 	parameter RAM_ADDR_WIDTH = 9;  // 2^9 = 512
     parameter CLKS_PER_BIT = 7292;  // 70MHz / 9600bps = 7291.6667
 	
@@ -68,7 +68,7 @@ module Data_Mem (
         .o_TxDone(TxDone)
     );
 
-    reg [2:0] UART_Ctrl;  // 0: TxDone, 1: Rx_Done, 2: TxActive
+    reg [2:0] UART_Ctrl;  // 0: TxDone, 1: RxDone, 2: TxActive
 
 
 	// read data from RAM
@@ -76,7 +76,7 @@ module Data_Mem (
                 MemRd ? (
                     Addr == 32'h4000001C ? {24'h0, RxByte} :
                     Addr == 32'h40000020 ? {27'h0, UART_Ctrl, 2'b0} :
-                    Addr == 32'h40000024 ? 32'h00000000 :
+                    Addr == 32'h40000018 ? 32'h00000000 :
                     RAM_Data[AddrWord]
                     ) :
                 32'h00000000;
@@ -211,15 +211,12 @@ module Data_Mem (
                     TxByte <= WrData[7:0];
                     TxValid <= 1'b1;
                 end
-                else if (Addr == 32'h4000001C) begin
-                    ;
-                end
-                else if (Addr == 32'h40000020) begin
-                    UART_Ctrl[1:0] <= 2'b00;
-                end
-                else begin
+                else if (Addr[31:2] < RAM_SIZE)
                     RAM_Data[AddrWord] <= WrData;
                 end
+            end
+            if (MemRd && Addr == 32'h40000020) begin
+                UART_Ctrl[1:0] <= 2'b00;
             end
             if (RxValid) begin
                 RxByte <= RxRd;
