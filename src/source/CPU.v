@@ -167,20 +167,12 @@ assign Dot = RAM_Digi[7];
 assign Sel = RAM_Digi[11:8];
 
 
-clk_wiz_75 clk_wiz_75_inst (
+clk_wiz clk_wiz_inst (
  .clk_out1(clk),
  .reset(rst),
  .locked(locked),
  .clk_in1(sysclk)
  );
-
-//Clock clock (
-//    .rst(rst),
-//    .clk(sysclk),
-//    .ClockNew(clk)
-//);
-
-//assign clk = sysclk;
 
 PC pc (
     .rst(rst),

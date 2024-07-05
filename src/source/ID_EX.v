@@ -91,7 +91,7 @@ initial  begin
     end
 
 always @(posedge clk or posedge rst) begin
-    if (rst || HzCtrl == 2'b01) begin
+    if (rst) begin
         ID_EX_PCSrc <= 2'b00;
         ID_EX_Rs <= 32'h00000000;
         ID_EX_Rt <= 32'h00000000;
@@ -113,27 +113,51 @@ always @(posedge clk or posedge rst) begin
         ID_EX_OpCode <= 6'h00;
         ID_EX_ALUCtrl <= 5'h00;
     end
-    else if (HzCtrl == 2'b00) begin
-        ID_EX_PCSrc <= PCSrc;
-        ID_EX_Rs <= Rs;
-        ID_EX_Rt <= Rt;
-        ID_EX_ImmExt <= ImmExt;
-        ID_EX_RsAddr <= IF_ID_RsAddr;
-        ID_EX_RtAddr <= IF_ID_RtAddr;
-        ID_EX_RdAddr <= IF_ID_RdAddr;
-        ID_EX_ALUOp <= ALUOp;
-        ID_EX_ALUSrc1 <= ALUSrc1;
-        ID_EX_ALUSrc2 <= ALUSrc2;
-        ID_EX_Sign <= Sign;
-        ID_EX_LuOp <= LuOp;
-        ID_EX_RegDst <= RegDst;
-        ID_EX_MemRd <= MemRd;
-        ID_EX_MemWr <= MemWr;
-        ID_EX_MemtoReg <= MemtoReg;
-        ID_EX_RegWr <= RegWr;
-        ID_EX_PC4 <= IF_ID_PC4;
-        ID_EX_OpCode <= IF_ID_OpCode;
-        ID_EX_ALUCtrl <= ALUCtrl;
+    else begin
+        if (HzCtrl == 2'b01) begin
+            ID_EX_PCSrc <= 2'b00;
+            ID_EX_Rs <= 32'h00000000;
+            ID_EX_Rt <= 32'h00000000;
+            ID_EX_ImmExt <= 32'h00000000;
+            ID_EX_RsAddr <= 5'h00;
+            ID_EX_RtAddr <= 5'h00;
+            ID_EX_RdAddr <= 5'h00;
+            ID_EX_ALUOp <= 4'h0;
+            ID_EX_ALUSrc1 <= 1'b0;
+            ID_EX_ALUSrc2 <= 1'b0;
+            ID_EX_Sign <= 1'b0;
+            ID_EX_LuOp <= 1'b0;
+            ID_EX_RegDst <= 2'b00;
+            ID_EX_MemRd <= 1'b0;
+            ID_EX_MemWr <= 1'b0;
+            ID_EX_MemtoReg <= 2'b00;
+            ID_EX_RegWr <= 1'b0;
+            ID_EX_PC4 <= 32'h00000000;
+            ID_EX_OpCode <= 6'h00;
+            ID_EX_ALUCtrl <= 5'h00;
+        end
+        else if (HzCtrl == 2'b00) begin
+            ID_EX_PCSrc <= PCSrc;
+            ID_EX_Rs <= Rs;
+            ID_EX_Rt <= Rt;
+            ID_EX_ImmExt <= ImmExt;
+            ID_EX_RsAddr <= IF_ID_RsAddr;
+            ID_EX_RtAddr <= IF_ID_RtAddr;
+            ID_EX_RdAddr <= IF_ID_RdAddr;
+            ID_EX_ALUOp <= ALUOp;
+            ID_EX_ALUSrc1 <= ALUSrc1;
+            ID_EX_ALUSrc2 <= ALUSrc2;
+            ID_EX_Sign <= Sign;
+            ID_EX_LuOp <= LuOp;
+            ID_EX_RegDst <= RegDst;
+            ID_EX_MemRd <= MemRd;
+            ID_EX_MemWr <= MemWr;
+            ID_EX_MemtoReg <= MemtoReg;
+            ID_EX_RegWr <= RegWr;
+            ID_EX_PC4 <= IF_ID_PC4;
+            ID_EX_OpCode <= IF_ID_OpCode;
+            ID_EX_ALUCtrl <= ALUCtrl;
+        end
     end
 end
 

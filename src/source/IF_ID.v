@@ -50,7 +50,7 @@ initial begin
 end
 
 always @(posedge clk or posedge rst) begin
-    if (rst || HzCtrl == 2'b01) begin
+    if (rst) begin
         IF_ID_RsAddr <= 5'h00;
         IF_ID_RtAddr <= 5'h00;
         IF_ID_RdAddr <= 5'h00;
@@ -60,15 +60,27 @@ always @(posedge clk or posedge rst) begin
         IF_ID_JumpAddr <= 26'h0000000;
         IF_ID_PC4 <= 32'h00000000;
     end
-    else if (HzCtrl == 2'b00) begin
-        IF_ID_RsAddr <= Inst[25:21];
-        IF_ID_RtAddr <= Inst[20:16];
-        IF_ID_RdAddr <= Inst[15:11];
-        IF_ID_Imm <= Inst[15:0];
-        IF_ID_OpCode <= Inst[31:26];
-        IF_ID_Funct <= Inst[5:0];
-        IF_ID_JumpAddr <= {PC4[31:28], Inst[25:0], 2'b00};
-        IF_ID_PC4 <= PC4;
+    else begin
+        if (HzCtrl == 2'b01) begin
+            IF_ID_RsAddr <= 5'h00;
+            IF_ID_RtAddr <= 5'h00;
+            IF_ID_RdAddr <= 5'h00;
+            IF_ID_Imm <= 16'h0000;
+            IF_ID_OpCode <= 6'h00;
+            IF_ID_Funct <= 6'h00;
+            IF_ID_JumpAddr <= 26'h0000000;
+            IF_ID_PC4 <= 32'h00000000;
+        end
+        else if (HzCtrl == 2'b00) begin
+            IF_ID_RsAddr <= Inst[25:21];
+            IF_ID_RtAddr <= Inst[20:16];
+            IF_ID_RdAddr <= Inst[15:11];
+            IF_ID_Imm <= Inst[15:0];
+            IF_ID_OpCode <= Inst[31:26];
+            IF_ID_Funct <= Inst[5:0];
+            IF_ID_JumpAddr <= {PC4[31:28], Inst[25:0], 2'b00};
+            IF_ID_PC4 <= PC4;
+        end
     end
 end
 

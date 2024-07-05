@@ -103,21 +103,21 @@ module Data_Mem (
 
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
-		RAM_Digi <= 12'h0;
-
-        // // single cycle processor test case 2
-
-        // RAM_Data[0] <= 32'hffffffd3; // X0 = -45
-        // RAM_Data[1] <= 32'h00000003; // Y0 = 3
-        // RAM_Data[2] <= 32'h00000028; // X1 = 40
-        // RAM_Data[3] <= 32'h00000024; // Y1 = 36
-        // RAM_Data[4] <= 32'hfffffffe; // X2 = -2
-        // RAM_Data[5] <= 32'h00000006; // Y2 = 6
-        // RAM_Data[6] <= 32'hfffffff9; // X3 = -7
-        // RAM_Data[7] <= 32'h0000003a; // Y3 = 58
-        
-        // for (i = 8; i < RAM_SIZE; i = i + 1)
-        //     RAM_Data[i] <= 32'h00000000;
+            RAM_Digi <= 12'h0;
+    
+            // // single cycle processor test case 2
+    
+            // RAM_Data[0] <= 32'hffffffd3; // X0 = -45
+            // RAM_Data[1] <= 32'h00000003; // Y0 = 3
+            // RAM_Data[2] <= 32'h00000028; // X1 = 40
+            // RAM_Data[3] <= 32'h00000024; // Y1 = 36
+            // RAM_Data[4] <= 32'hfffffffe; // X2 = -2
+            // RAM_Data[5] <= 32'h00000006; // Y2 = 6
+            // RAM_Data[6] <= 32'hfffffff9; // X3 = -7
+            // RAM_Data[7] <= 32'h0000003a; // Y3 = 58
+            
+            // for (i = 8; i < RAM_SIZE; i = i + 1)
+            //     RAM_Data[i] <= 32'h00000000;
 
             // insert sort and binary insert sort test case
 
@@ -154,11 +154,13 @@ module Data_Mem (
 
 		end
 		// write data to RAM
-		else if (MemWr) begin
-			if (Addr == 32'h40000010)
-				RAM_Digi <= WrData[11:0];
-			else if (AddrWord < RAM_SIZE)
-				RAM_Data[AddrWord] <= WrData;
+		else begin
+            if (MemWr) begin
+                if (Addr == 32'h40000010)
+                    RAM_Digi <= WrData[11:0];
+                else if (AddrWord < RAM_SIZE)
+                    RAM_Data[AddrWord] <= WrData;
+            end
 		end
 	end
 			

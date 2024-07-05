@@ -26,26 +26,25 @@ module PC (
     input clk,
     input Keep,
     input [31:0] PC_Next,
-    output wire [31:0] PC,
+    output reg [31:0] PC,
     output wire [31:0] PC4
 );
 
-reg [31:0] PC_Reg;
-
 initial begin
-    PC_Reg <= 32'h00400000;
+    PC <= 32'h00400000;
 end
 
 always @(posedge clk or posedge rst) begin
     if (rst) begin
-        PC_Reg <= 32'h00400000;
+        PC <= 32'h00400000;
     end
-    else if (!Keep) begin
-        PC_Reg <= PC_Next;
+    else begin
+        if (!Keep) begin
+            PC <= PC_Next;
+        end
     end
 end
 
-assign PC = PC_Reg;
-assign PC4 = PC_Reg + 32'h00000004;
+assign PC4 = PC + 32'h00000004;
 
 endmodule
