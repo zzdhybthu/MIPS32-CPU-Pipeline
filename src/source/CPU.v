@@ -24,9 +24,11 @@
 module CPU (
     input rst,
     input sysclk,
+    input RxSerial,
     output wire [6:0] Seg,
     output wire Dot,
-    output wire [3:0] Sel
+    output wire [3:0] Sel,
+    output wire TxSerial
 );
 
 // Clock
@@ -343,8 +345,10 @@ Data_Mem data_mem (
     .MemWr(EX_MEM_MemWr),
     .Addr(EX_MEM_ALUOut),
     .WrData(MemWrData),
+    .RxSerial(RxSerial),
     .RdData(MemRdData),
-    .RAM_Digi(RAM_Digi)
+    .RAM_Digi(RAM_Digi),
+    .TxSerial(TxSerial)
 );
 
 MEM_WB mem_wb (

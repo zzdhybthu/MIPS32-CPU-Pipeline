@@ -28,28 +28,69 @@ module Data_Mem (
 	input  MemWr,
 	input  [31:0] Addr,
 	input  [31:0] WrData,
+    input RxSerial,
 	output wire [31:0] RdData,
-	output reg [11:0] RAM_Digi
+	output reg [11:0] RAM_Digi,
+    output wire TxSerial
 );
 	
 	parameter RAM_SIZE = 512;  // 0x00000000 ~ 0x000007FF
 	parameter RAM_ADDR_WIDTH = 9;  // 2^9 = 512
+    parameter CLKS_PER_BIT = 7292;  // 70MHz / 9600bps = 7291.6667
 	
 	reg [31:0] RAM_Data [RAM_SIZE - 1 : 0];
 
 	wire [RAM_ADDR_WIDTH - 1 : 0] AddrWord;
 	assign AddrWord = Addr[RAM_ADDR_WIDTH + 1 : 2];
 
+    
+    // UART
+    wire RxValid;
+    wire [7:0] RxRd;
+    reg [7:0] RxData;
+    reg [7:0] RxByte;
+    UART_RX #(CLKS_PER_BIT) uart_rx (
+        .clk(clk),
+        .i_RxSerial(RxSerial),
+        .o_RxByte(RxRd)
+        .o_Rx_DV(RxValid),
+    );
+
+    reg [7:0] TxByte;
+    reg TxValid;
+    wire TxActive, TxDone;
+    UART_TX #(CLKS_PER_BIT) uart_tx (
+        .clk(clk),
+        .i_TxByte(TxByte),
+        .i_Tx_DV(TxValid),
+        .o_TxSerial(TxSerial),
+        .o_TxActive(TxActive),
+        .o_TxDone(TxDone)
+    );
+
+    reg [2:0] UART_Ctrl;  // 0: TxDone, 1: Rx_Done, 2: TxActive
+
 
 	// read data from RAM
-	assign RdData = (MemRd && AddrWord < RAM_SIZE) ? RAM_Data[AddrWord] : 32'h00000000;
+	assign RdData = 
+                MemRd ? (
+                    Addr == 32'h4000001C ? {24'h0, RxByte} :
+                    Addr == 32'h40000020 ? {27'h0, UART_Ctrl, 2'b0} :
+                    Addr == 32'h40000024 ? 32'h00000000 :
+                    RAM_Data[AddrWord]
+                    ) :
+                32'h00000000;
 	
 	
+    // initial RAM
 	integer i;
-
 	initial begin
 
-		RAM_Digi <= 12'h0;
+        RAM_Digi <= 12'h0;
+        TxByte <= 8'h0;
+        TxValid <= 1'b0;
+        UART_Ctrl <= 3'b000;
+
 
 		// // single cycle processor test case 2
 
@@ -106,6 +147,9 @@ module Data_Mem (
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
             RAM_Digi <= 12'h0;
+            TxByte <= 8'h0;
+            TxValid <= 1'b0;
+            UART_Ctrl <= 3'b000;
     
             // // single cycle processor test case 2
     
@@ -160,10 +204,34 @@ module Data_Mem (
 		// write data to RAM
 		else begin
             if (MemWr) begin
-                if (Addr == 32'h40000010)
+                if (Addr == 32'h40000010) begin
                     RAM_Digi <= WrData[11:0];
-                else if (AddrWord < RAM_SIZE)
+                end
+                else if (Addr == 32'h40000018) begin
+                    TxByte <= WrData[7:0];
+                    TxValid <= 1'b1;
+                end
+                else if (Addr == 32'h4000001C) begin
+                    ;
+                end
+                else if (Addr == 32'h40000020) begin
+                    UART_Ctrl[1:0] <= 2'b00;
+                end
+                else begin
                     RAM_Data[AddrWord] <= WrData;
+                end
+            end
+            if (RxValid) begin
+                RxByte <= RxRd;
+                UART_Ctrl[1] <= 1;
+            end
+            if (TxDone) begin
+                TxValid <= 1'b0;
+                UART_Ctrl[0] <= 1'b1;
+                UART_Ctrl[2] <= 1'b0;
+            end
+            if (TxActive) begin
+                UART_Ctrl[2] <= 1'b1;
             end
 		end
 	end
