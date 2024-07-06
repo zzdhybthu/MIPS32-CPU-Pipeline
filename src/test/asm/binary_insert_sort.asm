@@ -1,5 +1,6 @@
 .text
 
+# binary insert sort
 
 li $s0, 0 # int compare_count = 0
 
@@ -12,7 +13,7 @@ jal binary_insertion_sort
 
 sw $s0, 0($s1) # buffer[0] = compare_count
 
-j final
+j sort_done
 
 
 # a0: v, a1: k, a2: n
@@ -111,8 +112,9 @@ jr $s5
 
 
 
+sort_done:
 
-final:
+# show result using led
 
 li $s0, 2047  # 0x000007FF
 li $t0, 63
@@ -153,8 +155,8 @@ li $s1, 1073741840  # 0x40000010
 li $t0, 4
 mul $s2, $s2, 4
 
-begin_1:
-bgt $t0, $s2, end_1
+show_loop:
+bgt $t0, $s2, show_end
 lw $t3, 0($t0)  # $t3 = buffer[i]
 
 sll $a0, $t3, 28  # $a0 = $t3[3:0]
@@ -188,8 +190,8 @@ addi $a3, $a3, 2048  # $a3 += 2^11
 # loop for 1s/4ms = 250
 li $t1, 250
 
-begin_2:
-beq $t1, $zero, end_2
+show_stall_loop:
+beq $t1, $zero, show_stall_end
 sw $a0, 0($s1)  # buffer[0x40000010] = digi
 jal stall_10k
 sw $a1, 0($s1)  # buffer[0x40000010] = digi
@@ -201,11 +203,11 @@ jal stall_10k
 
 sw $zero, 0($s1)  # buffer[0x40000010] = 0
 subi $t1, $t1, 1
-j begin_2
+j show_stall_loop
 
-end_2:
+show_stall_end:
 addi $t0, $t0, 4
-j begin_1
+j show_loop
 
 
 # stall, f0=75MHz, f=1KHz, stall=75KT, 5T per loop
@@ -216,5 +218,10 @@ subi $t2, $t2, 1
 bne $t2, $zero, stall_10k_loop
 jr $ra
 
-end_1:
-j end_1
+
+
+
+
+show_end:
+
+j show_end

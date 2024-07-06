@@ -17,3 +17,6 @@ set_property -dict {PACKAGE_PIN P2  IOSTANDARD LVCMOS33} [get_ports {Sel[2]}]
 set_property -dict {PACKAGE_PIN M2  IOSTANDARD LVCMOS33} [get_ports {Sel[3]}]
 
 set_property -dict {PACKAGE_PIN V3 IOSTANDARD LVCMOS33} [get_ports Dot]
+
+set_property -dict {PACKAGE_PIN B20 IOSTANDARD LVCMOS33} [get_ports RxSerial]
+set_property -dict {PACKAGE_PIN A20 IOSTANDARD LVCMOS33} [get_ports TxSerial]
