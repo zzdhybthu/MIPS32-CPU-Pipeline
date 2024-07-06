@@ -1,51 +1,5 @@
 .text
 
-# receive data
-
-li $s0, 1073741848  # 0x40000018, UART_TXD
-                    # 0x4000001C, UART_RXD
-                    # 0x40000020, UART_CONFIG
-li $a0, 0
-li $a1, -4
-receive_loop:
-beq $a0, $a1, receive_done
-jal receive_wait_loop
-lw $t1, 4($s0)
-sll $t1, $t1, 24
-jal receive_wait_loop
-lw $t2, 4($s0)
-sll $t2, $t2, 16
-or $t2, $t1, $t2
-jal receive_wait_loop
-lw $t3, 4($s0)
-sll $t3, $t3, 8
-or $t3, $t2, $t3
-jal receive_wait_loop
-lw $t4, 4($s0)
-or $t0, $t3, $t4
-
-sw $t0, 0($a0)
-addi $a0, $a0, 4
-bne $a0, 0, receive_loop
-mul $a1, $t0, 4
-addi $a1, $a1, 4
-sw $a1, -4($s0)  # store n in 0x40000014
-j receive_loop
-
-
-receive_wait_loop:
-lw $t0, 8($s0)
-sll $t0, $t0, 28  # RxDone
-srl $t0, $t0, 31
-beq $t0, $zero, receive_wait_loop
-jr $ra
-
-
-
-
-
-receive_done:
-
 # binary insert sort
 
 li $s0, 0 # int compare_count = 0
@@ -160,48 +114,6 @@ jr $s5
 
 sort_done:
 
-# send data
-
-li $s0, 1073741848  # 0x40000018, UART_TXD
-                    # 0x4000001C, UART_RXD
-                    # 0x40000020, UART_CONFIG
-lw $a1, -4($s0)  # n
-li $a0, 0
-send_loop:
-beq $a0, $a1, send_done
-lw $t0, 0($a0)
-srl $t1, $t0, 24  # $t1 = $t0[31:24]
-sll $t2, $t0, 8  # $t2 = $t0[23:16]
-srl $t2, $t2, 24
-sll $t3, $t0, 16  # $t3 = $t0[15:8]
-srl $t3, $t3, 24
-sll $t4, $t0, 24  # $t4 = $t0[7:0]
-srl $t4, $t4, 24
-sw $t1, 0($s0)
-jal send_wait_loop
-sw $t2, 0($s0)
-jal send_wait_loop
-sw $t3, 0($s0)
-jal send_wait_loop
-sw $t4, 0($s0)
-jal send_wait_loop
-addi $a0, $a0, 4
-j send_loop
-
-
-send_wait_loop:
-lw $t0, 8($s0)
-sll $t0, $t0, 29  # TxDone
-srl $t0, $t0, 31
-beq $t0, $zero, send_wait_loop
-jr $ra
-
-
-
-
-
-send_done:
-
 # show result using led
 
 li $s0, 2047  # 0x000007FF
@@ -298,9 +210,9 @@ addi $t0, $t0, 4
 j show_loop
 
 
-# stall, f0=70MHz, f=1KHz, stall=70KT, 5T per loop
+# stall, f0=75MHz, f=1KHz, stall=75KT, 5T per loop
 stall_10k:
-li $t2, 14000
+li $t2, 15000
 stall_10k_loop:
 subi $t2, $t2, 1
 bne $t2, $zero, stall_10k_loop

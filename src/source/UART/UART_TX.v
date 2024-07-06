@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
   
-module UART_TX #(parameter CLKS_PER_BIT = 7292) (  // 70MHz / 9600bps = 7291.6667
+module UART_TX #(parameter CLKS_PER_BIT = 7813) ( // 75MHz / 9600bps = 7812.5
     input clk,
     input [7:0] i_Tx_Byte,  // Byte to send
     input i_Tx_DV,  // Data Valid

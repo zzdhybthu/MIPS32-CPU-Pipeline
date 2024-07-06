@@ -21,11 +21,11 @@
 //////////////////////////////////////////////////////////////////////////////////
 
   
-module UART_RX #(parameter CLKS_PER_BIT = 7292) (  // 70MHz / 9600bps = 7291.6667
+module UART_RX #(parameter CLKS_PER_BIT = 7813) (  // 75MHz / 9600bps = 7812.5
     input clk,         
     input i_Rx_Serial,  // Serial bit input
-    output wire [7:0] o_Rx_Byte  // Received Byte
-    output wire o_Rx_DV,  // Data Valid, 1 if byte received
+    output wire [7:0] o_Rx_Byte,  // Received Byte
+    output wire o_Rx_DV  // Data Valid, 1 if byte received
 );
 
 parameter s_IDLE = 3'b000;

@@ -36,7 +36,7 @@ module Data_Mem (
 	
 	parameter RAM_SIZE = 512;  // 0x00000000 ~ 0x000007FC
 	parameter RAM_ADDR_WIDTH = 9;  // 2^9 = 512
-    parameter CLKS_PER_BIT = 7292;  // 70MHz / 9600bps = 7291.6667
+    parameter CLKS_PER_BIT = 7813;  // 75MHz / 9600bps = 7812.5
 	
 	reg [31:0] RAM_Data [RAM_SIZE - 1 : 0];
 
@@ -51,9 +51,9 @@ module Data_Mem (
     reg [7:0] RxByte;
     UART_RX #(CLKS_PER_BIT) uart_rx (
         .clk(clk),
-        .i_RxSerial(RxSerial),
-        .o_RxByte(RxRd)
-        .o_Rx_DV(RxValid),
+        .i_Rx_Serial(RxSerial),
+        .o_Rx_Byte(RxRd),
+        .o_Rx_DV(RxValid)
     );
 
     reg [7:0] TxByte;
@@ -61,11 +61,11 @@ module Data_Mem (
     wire TxActive, TxDone;
     UART_TX #(CLKS_PER_BIT) uart_tx (
         .clk(clk),
-        .i_TxByte(TxByte),
+        .i_Tx_Byte(TxByte),
         .i_Tx_DV(TxValid),
-        .o_TxSerial(TxSerial),
-        .o_TxActive(TxActive),
-        .o_TxDone(TxDone)
+        .o_Tx_Serial(TxSerial),
+        .o_Tx_Active(TxActive),
+        .o_Tx_Done(TxDone)
     );
 
     reg [2:0] UART_Ctrl;  // 0: TxDone, 1: RxDone, 2: TxActive
@@ -92,54 +92,40 @@ module Data_Mem (
         UART_Ctrl <= 3'b000;
 
 
-		// // single cycle processor test case 2
+		// // used for sort method and led display simulation only
 
-		// RAM_Data[0] <= 32'hffffffd3; // X0 = -45
-		// RAM_Data[1] <= 32'h00000003; // Y0 = 3
-		// RAM_Data[2] <= 32'h00000028; // X1 = 40
-		// RAM_Data[3] <= 32'h00000024; // Y1 = 36
-		// RAM_Data[4] <= 32'hfffffffe; // X2 = -2
-		// RAM_Data[5] <= 32'h00000006; // Y2 = 6
-		// RAM_Data[6] <= 32'hfffffff9; // X3 = -7
-		// RAM_Data[7] <= 32'h0000003a; // Y3 = 58
+		// RAM_Data[0] <= 32'h00000014;
+		// RAM_Data[1] <= 32'h000041a8;
+		// RAM_Data[2] <= 32'h00003af2;
+		// RAM_Data[3] <= 32'h0000acda;
+		// RAM_Data[4] <= 32'h00000c2b;
+		// RAM_Data[5] <= 32'h0000b783;
+		// RAM_Data[6] <= 32'h0000dac9;
+		// RAM_Data[7] <= 32'h00008ed9;
+		// RAM_Data[8] <= 32'h000009ff;
+		// RAM_Data[9] <= 32'h00002f44;
+		// RAM_Data[10] <= 32'h0000044e;
+		// RAM_Data[11] <= 32'h00009899;
+		// RAM_Data[12] <= 32'h00003c56;
+		// RAM_Data[13] <= 32'h0000128d;
+		// RAM_Data[14] <= 32'h0000dbe3;
+		// RAM_Data[15] <= 32'h0000d4b4;
+		// RAM_Data[16] <= 32'h00003748;
+		// RAM_Data[17] <= 32'h00003918;
+		// RAM_Data[18] <= 32'h00004112;
+		// RAM_Data[19] <= 32'h0000c399;
+		// RAM_Data[20] <= 32'h00004955;
 		
-		// for (i = 8; i < RAM_SIZE; i = i + 1)
-		//     RAM_Data[i] <= 32'h00000000;
+		// for (i = 21; i < RAM_SIZE; i = i + 1) begin
+		// 	RAM_Data[i] <= 32'h00000000;
+        // end
 
 
-		// insert sort and binary insert sort test case
-
-		RAM_Data[0] <= 32'h00000014;
-		RAM_Data[1] <= 32'h000041a8;
-		RAM_Data[2] <= 32'h00003af2;
-		RAM_Data[3] <= 32'h0000acda;
-		RAM_Data[4] <= 32'h00000c2b;
-		RAM_Data[5] <= 32'h0000b783;
-		RAM_Data[6] <= 32'h0000dac9;
-		RAM_Data[7] <= 32'h00008ed9;
-		RAM_Data[8] <= 32'h000009ff;
-		RAM_Data[9] <= 32'h00002f44;
-		RAM_Data[10] <= 32'h0000044e;
-		RAM_Data[11] <= 32'h00009899;
-		RAM_Data[12] <= 32'h00003c56;
-		RAM_Data[13] <= 32'h0000128d;
-		RAM_Data[14] <= 32'h0000dbe3;
-		RAM_Data[15] <= 32'h0000d4b4;
-		RAM_Data[16] <= 32'h00003748;
-		RAM_Data[17] <= 32'h00003918;
-		RAM_Data[18] <= 32'h00004112;
-		RAM_Data[19] <= 32'h0000c399;
-		RAM_Data[20] <= 32'h00004955;
-		
-		for (i = 21; i < RAM_SIZE; i = i + 1)
-			RAM_Data[i] <= 32'h00000000;
-
-
-		// // original test case
-		
-		// for (i = 0; i < RAM_SIZE; i = i + 1) begin
-		//    RAM_Data[i] <= 32'h00000000;
-		// end
+        // used for uart implementation
+    
+        for (i = 0; i < RAM_SIZE; i = i + 1) begin
+        RAM_Data[i] <= 32'h00000000;
+        end
 
 	end
 
@@ -150,55 +136,42 @@ module Data_Mem (
             TxByte <= 8'h0;
             TxValid <= 1'b0;
             UART_Ctrl <= 3'b000;
-    
-            // // single cycle processor test case 2
-    
-            // RAM_Data[0] <= 32'hffffffd3; // X0 = -45
-            // RAM_Data[1] <= 32'h00000003; // Y0 = 3
-            // RAM_Data[2] <= 32'h00000028; // X1 = 40
-            // RAM_Data[3] <= 32'h00000024; // Y1 = 36
-            // RAM_Data[4] <= 32'hfffffffe; // X2 = -2
-            // RAM_Data[5] <= 32'h00000006; // Y2 = 6
-            // RAM_Data[6] <= 32'hfffffff9; // X3 = -7
-            // RAM_Data[7] <= 32'h0000003a; // Y3 = 58
+
+
+            // // used for sort method and led display simulation only
+
+            // RAM_Data[0] <= 32'h00000014;
+            // RAM_Data[1] <= 32'h000041a8;
+            // RAM_Data[2] <= 32'h00003af2;
+            // RAM_Data[3] <= 32'h0000acda;
+            // RAM_Data[4] <= 32'h00000c2b;
+            // RAM_Data[5] <= 32'h0000b783;
+            // RAM_Data[6] <= 32'h0000dac9;
+            // RAM_Data[7] <= 32'h00008ed9;
+            // RAM_Data[8] <= 32'h000009ff;
+            // RAM_Data[9] <= 32'h00002f44;
+            // RAM_Data[10] <= 32'h0000044e;
+            // RAM_Data[11] <= 32'h00009899;
+            // RAM_Data[12] <= 32'h00003c56;
+            // RAM_Data[13] <= 32'h0000128d;
+            // RAM_Data[14] <= 32'h0000dbe3;
+            // RAM_Data[15] <= 32'h0000d4b4;
+            // RAM_Data[16] <= 32'h00003748;
+            // RAM_Data[17] <= 32'h00003918;
+            // RAM_Data[18] <= 32'h00004112;
+            // RAM_Data[19] <= 32'h0000c399;
+            // RAM_Data[20] <= 32'h00004955;
             
-            // for (i = 8; i < RAM_SIZE; i = i + 1)
+            // for (i = 21; i < RAM_SIZE; i = i + 1) begin
             //     RAM_Data[i] <= 32'h00000000;
-
-
-            // insert sort and binary insert sort test case
-
-            RAM_Data[0] <= 32'h00000014;
-            RAM_Data[1] <= 32'h000041a8;
-            RAM_Data[2] <= 32'h00003af2;
-            RAM_Data[3] <= 32'h0000acda;
-            RAM_Data[4] <= 32'h00000c2b;
-            RAM_Data[5] <= 32'h0000b783;
-            RAM_Data[6] <= 32'h0000dac9;
-            RAM_Data[7] <= 32'h00008ed9;
-            RAM_Data[8] <= 32'h000009ff;
-            RAM_Data[9] <= 32'h00002f44;
-            RAM_Data[10] <= 32'h0000044e;
-            RAM_Data[11] <= 32'h00009899;
-            RAM_Data[12] <= 32'h00003c56;
-            RAM_Data[13] <= 32'h0000128d;
-            RAM_Data[14] <= 32'h0000dbe3;
-            RAM_Data[15] <= 32'h0000d4b4;
-            RAM_Data[16] <= 32'h00003748;
-            RAM_Data[17] <= 32'h00003918;
-            RAM_Data[18] <= 32'h00004112;
-            RAM_Data[19] <= 32'h0000c399;
-            RAM_Data[20] <= 32'h00004955;
+            // end
             
-            for (i = 21; i < RAM_SIZE; i = i + 1)
-                RAM_Data[i] <= 32'h00000000;
 
-
-			// // original test case
-				
-			// for (i = 0; i < RAM_SIZE; i = i + 1) begin
-			// 	RAM_Data[i] <= 32'h00000000;
-			// end
+			// used for uart implementation
+			
+			for (i = 0; i < RAM_SIZE; i = i + 1) begin
+				RAM_Data[i] <= 32'h00000000;
+			end
 
 		end
 		// write data to RAM
@@ -211,7 +184,7 @@ module Data_Mem (
                     TxByte <= WrData[7:0];
                     TxValid <= 1'b1;
                 end
-                else if (Addr[31:2] < RAM_SIZE)
+                else if (Addr[31:2] < RAM_SIZE) begin
                     RAM_Data[AddrWord] <= WrData;
                 end
             end
@@ -231,6 +204,6 @@ module Data_Mem (
                 UART_Ctrl[2] <= 1'b1;
             end
 		end
-	end
+    end
 			
 endmodule
