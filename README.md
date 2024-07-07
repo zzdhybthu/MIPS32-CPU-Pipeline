@@ -8,7 +8,7 @@ Driven by the course "Fundamental Experiment of Digital Logic and Processor" in 
 
 ## Directory Structure
 
-```bash
+```text
 .
 |-- LICENSE
 |-- README.md
