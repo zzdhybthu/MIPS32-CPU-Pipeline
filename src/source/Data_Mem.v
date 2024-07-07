@@ -78,8 +78,7 @@ module Data_Mem (
                     Addr == 32'h40000020 ? {27'h0, UART_Ctrl, 2'b0} :
                     Addr == 32'h40000018 ? 32'h00000000 :
                     RAM_Data[AddrWord]
-                    ) :
-                32'h00000000;
+                ) : 32'h00000000;
 	
 	
     // initial RAM
