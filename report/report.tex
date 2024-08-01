@@ -102,14 +102,13 @@
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=.8\textwidth]{asserts/pipeline_design.png}
+    \includegraphics[width=.8\textwidth]{asserts/MIPS32.png}
     \caption{
-        MIPS 流水线处理器参考设计方案
+        MIPS 流水线处理器数据通路
     }\label{fig:pipeline_design}
 \end{figure}
 
-本次 MIPS 流水线处理器的整体设计方案参考了 2024 年清华大学电子工程系《数字逻辑与处理器基础》课件中 5 级流水线的数据通路，如图 \ref{fig:pipeline_design} 所示。
-在此基础上，进行了如下改进或补充：
+本次 MIPS 流水线处理器的数据通路如图 \ref{fig:pipeline_design}。整体设计方案参考了 2024 年清华大学电子工程系《数字逻辑与处理器基础》课件中 5 级流水线的数据通路。在此基础上，进行了如下改进或补充：
 
 \begin{enumerate}[1]
     \item 对于分支指令，采用静态分支预测，默认不发生跳转，以减少 Stall 带来的性能损失。
