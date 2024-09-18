@@ -4,7 +4,7 @@
 
 MIPS Pipeline CPU implemented in Verilog HDL.
 
-Driven by the course "Fundamental Experiment of Digital Logic and Processor" in the 2rd semester of the undergraduate program in the School of Electronic and Engineering, Tsinghua University.
+Driven by the course "Fundamental Experiment of Digital Logic and Processor" in the 2rd semester of the undergraduate program in the School of Electronic and Engineering, Tsinghua University. Score: A+.
 
 ## Directory Structure
 
